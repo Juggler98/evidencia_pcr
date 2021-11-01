@@ -1,4 +1,3 @@
-import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/navigation/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,10 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final app = Application();
-    app.addRandomPersons(10000);
-    app.addRandomPCRTest(10000);
-    print(app.getPersonCount());
     return MaterialApp(
       title: 'Evidencia PCR testov',
       theme: ThemeData(

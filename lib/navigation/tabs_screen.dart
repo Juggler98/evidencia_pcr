@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/navigation/new_test_screen.dart';
 import 'package:evidencia_pcr/navigation/stats_screen.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../main_drawer.dart';
 import 'search_screen.dart';
@@ -33,14 +37,6 @@ class _TabsScreenState extends State<TabsScreen>
     _pageController = PageController(initialPage: _selectedPageIndex);
   }
 
-  var _isDarkMode = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _isDarkMode = Theme.of(context).brightness == Brightness.dark;
-  }
-
   @override
   void dispose() {
     _pageController.dispose();
@@ -68,7 +64,54 @@ class _TabsScreenState extends State<TabsScreen>
             icon: Icon(Icons.save),
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             tooltip: 'Ulož do súboru',
-            onPressed: () {},
+            onPressed: () async {
+              if (defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Nie je dostupné pre web'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+              try {
+                final selectedDirectory =
+                    await FilePicker.platform.getDirectoryPath();
+                if (selectedDirectory != null) {
+                  final formattedDate =
+                      DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now());
+                  final file = File(selectedDirectory +
+                      '/zalohaPCR_' +
+                      formattedDate +
+                      '.csv');
+                  if (Application().writeToFile(file)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Dáta boli uložené: ' + file.path),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Nastala chyba pri zápise'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              } catch (e) {
+                print(e.toString());
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Nastala chyba pri zápise'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../search/search_type.dart';
 import '../search/uz_typ.dart';
 
 

@@ -3,7 +3,6 @@ import 'package:evidencia_pcr/models/Kraj.dart';
 import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/Okres.dart';
 import 'package:evidencia_pcr/models/OkresPocetPozitivnych.dart';
-import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
@@ -11,17 +10,11 @@ import 'package:evidencia_pcr/models/twoThreeTree/TTTree.dart';
 import 'package:evidencia_pcr/stats/stats_list.dart';
 import 'package:evidencia_pcr/widgets/date_picker.dart';
 import 'package:evidencia_pcr/text_fields/number_textfield.dart';
-import 'package:evidencia_pcr/search/search_dropdown.dart';
 import 'package:evidencia_pcr/stats/stats_dropdown.dart';
-import 'package:evidencia_pcr/text_fields/string_textfield.dart';
-import 'package:evidencia_pcr/search/search_type.dart';
-import 'package:evidencia_pcr/pcr_testy/test_list.dart';
-import 'package:evidencia_pcr/search/uz_dropdown.dart';
 import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 class StatsScreen extends StatefulWidget {
 

@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
 
-class StringTextField extends StatefulWidget {
+class StringTextField extends StatelessWidget {
   final Function changeText;
   final String placeholder;
-  final String text;
+  final TextEditingController controller;
 
-  StringTextField(this.changeText, this.placeholder, this.text);
-
-  @override
-  _StringTextFieldState createState() => _StringTextFieldState();
-}
-
-class _StringTextFieldState extends State<StringTextField> {
-
-  TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.text != null)
-      _controller = TextEditingController()..text = widget.text.toString();
-    else
-      _controller = TextEditingController()..text = '';
-  }
+  StringTextField(this.changeText, this.placeholder, this.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +15,21 @@ class _StringTextFieldState extends State<StringTextField> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _controller,
-              textCapitalization: TextCapitalization.characters,
+            child: TextFormField(
+              controller: controller,
+              textCapitalization: TextCapitalization.sentences,
               autocorrect: false,
               enableSuggestions: false,
               autofocus: false,
               decoration: InputDecoration(
-                labelText: widget.placeholder,
+                labelText: placeholder,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(color: Colors.grey),
                 ),
               ),
               onChanged: (value) {
-                widget.changeText(value.isEmpty ? null : value);
+                changeText(value.isEmpty ? null : value);
               },
             ),
           ),

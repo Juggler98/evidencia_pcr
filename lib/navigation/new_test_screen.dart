@@ -1,25 +1,8 @@
 import 'package:evidencia_pcr/Application.dart';
-import 'package:evidencia_pcr/models/Kraj.dart';
-import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
-import 'package:evidencia_pcr/models/Okres.dart';
-import 'package:evidencia_pcr/models/OkresPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/Osoba.dart';
-import 'package:evidencia_pcr/models/PCRTest.dart';
-import 'package:evidencia_pcr/models/PCRTestDate.dart';
-import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
-import 'package:evidencia_pcr/models/twoThreeTree/TTTree.dart';
-import 'package:evidencia_pcr/widgets/date_picker.dart';
 import 'package:evidencia_pcr/text_fields/number_textfield.dart';
-import 'package:evidencia_pcr/search/search_dropdown.dart';
-import 'package:evidencia_pcr/stats/stats_dropdown.dart';
 import 'package:evidencia_pcr/text_fields/string_textfield.dart';
-import 'package:evidencia_pcr/search/search_type.dart';
-import 'package:evidencia_pcr/pcr_testy/test_list.dart';
-import 'package:evidencia_pcr/search/uz_dropdown.dart';
-import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 class NewTestScreen extends StatefulWidget {
   NewTestScreen();
@@ -38,11 +21,25 @@ class _NewTestScreenState extends State<NewTestScreen>
   var _positive = false;
   String _poznamka;
   var _createNewPerson = false;
+  var _controller = TextEditingController();
+  var _controller2 = TextEditingController();
 
   final app = new Application();
 
   @override
   bool get wantKeepAlive => true;
+
+  void _clearData() {
+    setState(() {
+      _rodneCislo = '';
+      _meno = null;
+      _priezvisko = null;
+      _positive = false;
+      _poznamka = null;
+      _controller.clear();
+      _controller2.clear();
+    });
+  }
 
   void _setRodneCislo(String rodCislo) {
     setState(() {
@@ -85,7 +82,7 @@ class _NewTestScreenState extends State<NewTestScreen>
     if (_createNewPerson) {
       if (_meno == null || _priezvisko == null) {
         _showScaffold('Zadaj meno a priezvisko');
-        //return;
+        return;
       }
       osoba = app.addOsoba(_meno, _priezvisko, _rodneCislo);
       if (osoba != null) {
@@ -94,31 +91,25 @@ class _NewTestScreenState extends State<NewTestScreen>
             content: Text('Osoba bola vytvorená'),
           ),
         );
-        setState(() {
-          _meno = null;
-          _priezvisko = null;
-        });
+        _meno = null;
+        _priezvisko = null;
       }
       _createNewPerson = false;
     } else {
       osoba = app.getOsoba(_rodneCislo);
     }
     if (osoba == null) {
-      setState(() {
-        _createNewPerson = true;
-      });
+      _createNewPerson = true;
       return;
     }
     if (app.addPCRTest(null, _rodneCislo, _kodPracoviska, _kodOkresu,
         _kodOkresu ~/ 100, _positive, _poznamka, osoba, null)) {
-      setState(() {
-        _rodneCislo = null;
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Test bol vytvoreny'),
         ),
       );
+      _clearData();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -146,13 +137,13 @@ class _NewTestScreenState extends State<NewTestScreen>
       child: Column(
         children: [
           SizedBox(height: 8),
-          StringTextField(_setRodneCislo, 'Zadaj rodné číslo', _rodneCislo),
+          StringTextField(_setRodneCislo, 'Zadaj rodné číslo', _controller),
           SizedBox(height: 2),
           NumberTextField(_setOkres, 'Zadaj kód okresu', _kodOkresu),
           SizedBox(height: 2),
           NumberTextField(
               _setPracovisko, 'Zadaj kód pracoviska', _kodPracoviska),
-          StringTextField(_setPoznamka, 'Poznámka', _poznamka),
+          StringTextField(_setPoznamka, 'Poznámka', _controller2),
           Padding(
             padding: const EdgeInsets.only(
                 left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
@@ -174,9 +165,9 @@ class _NewTestScreenState extends State<NewTestScreen>
           if (_createNewPerson)
             Column(
               children: [
-                StringTextField(_setMeno, 'Meno', _meno),
+                StringTextField(_setMeno, 'Meno', null),
                 SizedBox(height: 2),
-                StringTextField(_setPriezvisko, 'Priezvisko', _priezvisko),
+                StringTextField(_setPriezvisko, 'Priezvisko', null),
                 SizedBox(height: 2),
               ],
             ),
@@ -189,7 +180,9 @@ class _NewTestScreenState extends State<NewTestScreen>
                     if (_rodneCislo.length != 9 && _rodneCislo.length != 10) {
                       _showScaffold('Rodné číslo musí mať 9 alebo 10 znakov.');
                     } else {
-                      _save();
+                      setState(() {
+                        _save();
+                      });
                     }
                   },
             child: Text('Ulož'),

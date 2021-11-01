@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 import 'models/Kraj.dart';
 import 'models/Okres.dart';
@@ -657,7 +660,6 @@ class Application {
   // }
 
   void init() {
-    print('--------------------------------------');
     //random.setSeed(60); //TODO: remove it
     if (okresCodes.length != okresNames.length) {
       print("Error: okresCodes.length != okresNames.length");
@@ -765,77 +767,85 @@ class Application {
     return personTree.getIntervalData(osoba1, osoba2);
   }
 
-  // bool writeToFile(String fileName) {
-  //     String text;
-  //     List<PCRTestCode> testy = this.pcrTreeCode.getInOrderData();
-  //     ArrayList<Osoba> osoby = this.personTree.getInOrderData();
-  //     try {
-  //         BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
-  //         for (Osoba osoba : osoby) {
-  //             text = "";
-  //             text += osoba.getRodCislo() + ",";
-  //             text += osoba.getMeno() + ",";
-  //             text += osoba.getPriezvisko();
-  //             text += "\n";
-  //             writer.write(text);
-  //         }
-  //         writer.write("END\n");
-  //         for (PCRTestCode test : testy) {
-  //             text = "";
-  //             text += test.getData().getKodTestu() + ",";
-  //             text += test.getData().getRodCisloPacienta() + ",";
-  //             text += test.getData().getKodPracoviska() + ",";
-  //             text += test.getData().getKodOkresu() + ",";
-  //             text += test.getData().getKodKraja() + ",";
-  //             text += test.getData().isVysledok() + ",";
-  //             if (test.getData().getPoznamka() != null) {
-  //                 text += test.getData().getPoznamka() + ",";
-  //             } else {
-  //                 text += "" + ",";
-  //             }
-  //             Date date = test.getData().getDatum();
-  //             text += date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-  //             text += "\n";
-  //             writer.write(text);
-  //         }
-  //         writer.close();
-  //         return true;
-  //     } catch (Exception e) {
-  //         System.out.println(e.getMessage());
-  //         return false;
-  //     }
-  // }
+  bool writeToFile(File file) {
+    String text;
+    List<PCRTestCode> testy = this.pcrTreeCode.getInOrderData();
+    List<Osoba> osoby = this.personTree.getInOrderData();
+    try {
+      final writer = file.openWrite(mode: FileMode.append);
+      for (Osoba osoba in osoby) {
+        text = "";
+        text += osoba.getRodCislo() + ",";
+        text += osoba.getMeno() + ",";
+        text += osoba.getPriezvisko();
+        text += "\n";
+        writer.write(text);
+      }
+      writer.write('END\n');
+      for (PCRTestCode test in testy) {
+        text = "";
+        text += test.getData().getKodTestu() + ",";
+        text += test.getData().getRodCisloPacienta() + ",";
+        text += test.getData().getKodPracoviska().toString() + ",";
+        text += test.getData().getKodOkresu().toString() + ",";
+        text += test.getData().getKodKraja().toString() + ",";
+        text += test.getData().isVysledok().toString() + ",";
+        if (test.getData().getPoznamka() != null) {
+          text += test.getData().getPoznamka() + ",";
+        } else {
+          text += "" + ",";
+        }
+        DateTime date = test.getData().getDatum();
+        text += date.day.toString() +
+            "-" +
+            date.month.toString() +
+            "-" +
+            date.year.toString() +
+            " " +
+            date.hour.toString() +
+            ":" +
+            date.minute.toString() +
+            ":" +
+            date.second.toString();
+        text += "\n";
+        writer.write(text);
+      }
+      writer.close();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
 
-  // public boolean loadFromFile(String fileName) {
-  //     try {
-  //         BufferedReader reader = new BufferedReader(new FileReader(fileName + ".csv"));
-  //         String line = reader.readLine();
-  //         boolean readingPersons = true;
-  //         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-  //         while (line != null) {
-  //             //System.out.println(line);
-  //             if (line.equals("END")) {
-  //                 readingPersons = false;
-  //                 line = reader.readLine();
-  //             }
-  //             String[] data = line.split(",");
-  //             if (readingPersons) {
-  //                 addOsoba(data[1], data[2], data[0]);
-  //             } else {
-  //                 Date date = formatter.parse(data[7]);
-  //                 Osoba osoba = this.getOsoba(data[1]);
-  //                 addPCRTest(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]), Boolean.parseBoolean(data[5]), data[6], osoba, date);
-  //             }
-  //             line = reader.readLine();
-  //         }
-  //         reader.close();
-  //         return true;
-  //     } catch (Exception e) {
-  //         System.out.println("Error: Reading");
-  //         System.out.println(e.getMessage());
-  //         return false;
-  //     }
-  // }
+  bool loadFromFile(List<String> lines) {
+    try {
+      bool readingPersons = true;
+      lines.forEach((line) {
+        final formatter = DateFormat('dd-MM-yyyy HH:mm:ss');
+        print(line);
+        if (line == 'END') {
+          readingPersons = false;
+        } else {
+          final data = line.split(',');
+          if (readingPersons) {
+            addOsoba(data[1], data[2], data[0]);
+          } else {
+            DateTime date = formatter.parse(data[7]);
+            Osoba osoba = this.getOsoba(data[1]);
+            final positive = data[5] == 'true';
+            addPCRTest(data[0], data[1], int.parse(data[2]), int.parse(data[3]),
+                int.parse(data[4]), positive, data[6], osoba, date);
+          }
+        }
+      });
+      return true;
+    } catch (e) {
+      print("Error: Reading");
+      print(e.toString());
+      return false;
+    }
+  }
 
   bool addPCRTest(
       String kodTestu,
@@ -848,7 +858,7 @@ class Application {
       Osoba osoba,
       DateTime datum) {
     if (kodTestu == null) {
-      kodTestu = Random().nextInt(100000).toString();
+      kodTestu = Uuid().v4();
     }
     final pcrTest = new PCRTest(kodTestu, rodCislo, kodPracoviska, kodOkresu,
         kodKraju, vysledok, poznamka, osoba, datum);

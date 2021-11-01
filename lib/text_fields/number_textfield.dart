@@ -1,29 +1,12 @@
-import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class NumberTextField extends StatefulWidget {
+class NumberTextField extends StatelessWidget {
   final Function changeText;
   final String placeholder;
   final int value;
 
   NumberTextField(this.changeText, this.placeholder, this.value);
-
-  @override
-  _NumberTextFieldState createState() => _NumberTextFieldState();
-}
-
-class _NumberTextFieldState extends State<NumberTextField> {
-  TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.value != null)
-      _controller = TextEditingController()..text = widget.value.toString();
-    else
-      _controller = TextEditingController()..text = '';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +16,8 @@ class _NumberTextFieldState extends State<NumberTextField> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _controller,
+            child: TextFormField(
+              initialValue: value == null ? '' : value.toString(),
               keyboardType: TextInputType.number,
               autocorrect: false,
               enableSuggestions: false,
@@ -43,7 +26,7 @@ class _NumberTextFieldState extends State<NumberTextField> {
                 FilteringTextInputFormatter.digitsOnly
               ],
               decoration: InputDecoration(
-                labelText: widget.placeholder,
+                labelText: placeholder,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(color: Colors.grey),
@@ -52,9 +35,9 @@ class _NumberTextFieldState extends State<NumberTextField> {
               onChanged: (value) {
                 if (value.isNotEmpty) {
                   final i = int.parse(value);
-                  widget.changeText(i);
+                  changeText(i);
                 } else {
-                  widget.changeText(null);
+                  changeText(null);
                 }
               },
             ),

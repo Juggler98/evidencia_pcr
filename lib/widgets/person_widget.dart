@@ -1,8 +1,7 @@
-import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/Osoba.dart';
-import 'package:evidencia_pcr/models/PCRTest.dart';
-import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class PersonWidget extends StatelessWidget {
@@ -28,12 +27,22 @@ class PersonWidget extends StatelessWidget {
           'Priezvisko: ' + osoba.priezvisko.toString(),
           style: TextStyle(fontSize: _fontSize),
         ),
-        Text(
-          'Rodné číslo: ' + osoba.rodCislo.toString(),
-          style: TextStyle(fontSize: _fontSize),
+        GestureDetector(
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: osoba.rodCislo.toString()));
+            Fluttertoast.showToast(
+              msg: 'Skopírované',
+            );
+          },
+          child: Text(
+            'Rodné číslo: ' + osoba.rodCislo.toString(),
+            style: TextStyle(fontSize: _fontSize),
+          ),
         ),
         Text(
-          'Dátum narodenia: ' +  DateFormat.yMd(Localizations.localeOf(context).toString()).format(osoba.getDatumNarodenia()),
+          'Dátum narodenia: ' +
+              DateFormat.yMd(Localizations.localeOf(context).toString())
+                  .format(osoba.getDatumNarodenia()),
           style: TextStyle(fontSize: _fontSize),
         ),
       ],

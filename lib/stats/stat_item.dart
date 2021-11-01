@@ -1,10 +1,5 @@
-import 'package:evidencia_pcr/Application.dart';
-import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
-import 'package:evidencia_pcr/search/search_type.dart';
-import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class StatItem extends StatelessWidget {
   final UzemnaJednotka uzemnaJednotka;

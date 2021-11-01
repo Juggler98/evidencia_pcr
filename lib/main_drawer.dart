@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:evidencia_pcr/screens/generator_screen.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
+import 'Application.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -9,7 +14,7 @@ class MainDrawer extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 120,
+              height: 110,
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               alignment: Alignment.bottomLeft,
@@ -46,12 +51,79 @@ class MainDrawer extends StatelessWidget {
                 color: Colors.black54,
               ),
               title: Text('Načítaj zo súboru'),
-              onTap: () {
-                Navigator.of(context).pop();
-                //Navigator.of(context).pushNamed(ContactUsScreen.routeName);
+              onTap: () async {
+                try {
+                  final result = await FilePicker.platform.pickFiles();
+                  if (result != null) {
+                    File file = File(result.files.single.path);
+                    final lines = await file.readAsLines();
+                    if (Application().loadFromFile(lines)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Dáta boli načítané'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Nastala chyba pri načítaní'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Nastala chyba pri načítaní'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+                Navigator.pop(context);
               },
             ),
             Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.delete_forever_outlined,
+                color: Colors.black54,
+              ),
+              title: Text('Vymaž všetko'),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text('Určite?'),
+                        content: Text('Určite chceš vymazať všetky dáta?'),
+                        actions: [
+                          TextButton(
+                            child: Text("Vymazať"),
+                            onPressed: () {
+                              Application().removeAllData();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Dáta boli vymazané'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              Navigator.of(context).pop(true);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text("Zrušiť"),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
           ],
         ),
       ),

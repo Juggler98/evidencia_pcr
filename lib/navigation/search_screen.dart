@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
@@ -16,7 +14,6 @@ import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 import '../Application.dart';
 
@@ -30,15 +27,12 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen>
     with AutomaticKeepAliveClientMixin<SearchScreen> {
   var _enteredText;
-
   var _searchType = SearchType.PcrTest;
   var _uzJednotkaType = UzType.All;
-
   var _onlyPositive = false;
-
-  var _kodUzJednotky = 0;
-
+  var _kodUzJednotky;
   var _pocetDni;
+
 
   DateTime _startDate;
   DateTime _endDate;
@@ -152,8 +146,8 @@ class _SearchScreenState extends State<SearchScreen>
           PCRTest('', null, null, null, null, null, null, null, _startDate);
       final testData2 =
           PCRTest('', null, null, null, null, null, null, null, _endDate);
-      print(_startDate.toString());
-      print(_endDate.toString());
+      //print(_startDate.toString());
+      //print(_endDate.toString());
       final test1 = PCRTestDate(testData1);
       final test2 = PCRTestDate(testData2);
       UzemnaJednotka uzemnaJednotka;
@@ -209,6 +203,8 @@ class _SearchScreenState extends State<SearchScreen>
       case UzType.Pracovisko:
         return 'Zadaj kód pracoviska';
         break;
+      default:
+        return '';
     }
   }
 
@@ -225,21 +221,18 @@ class _SearchScreenState extends State<SearchScreen>
           child: SearchDropdown(_setSearchType),
         ),
         if (_searchType == SearchType.PcrTest)
-          StringTextField(_setEnteredCode, 'Zadaj kód testu', _enteredText),
+          StringTextField(_setEnteredCode, 'Zadaj kód testu', null),
         if (_searchType == SearchType.PersonTests)
-          StringTextField(_setEnteredCode, 'Zadaj rodné číslo', _enteredText),
+          StringTextField(_setEnteredCode, 'Zadaj rodné číslo', null),
         if (_searchType == SearchType.PcrTestRange)
           Column(
             children: [
               UzDropdown(_setUzJednotka, _uzJednotkaType),
+              SizedBox(height: 4),
               if (_searchType == SearchType.PcrTestRange &&
                   _uzJednotkaType != UzType.All)
-                if (defaultTargetPlatform == TargetPlatform.windows ||
-                    defaultTargetPlatform == TargetPlatform.macOS ||
-                    defaultTargetPlatform == TargetPlatform.linux)
-                  SizedBox(height: 6),
-              NumberTextField(
-                  _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
+                NumberTextField(
+                    _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
@@ -250,7 +243,7 @@ class _SearchScreenState extends State<SearchScreen>
                     color: Colors.brown,
                   ),
                   value: _onlyPositive,
-                  activeColor: Colors.green,
+                  activeColor: Colors.red,
                   onChanged: (value) {
                     setState(() {
                       _onlyPositive = value;
@@ -323,7 +316,7 @@ class _SearchScreenState extends State<SearchScreen>
                             _endDate.subtract(Duration(days: _pocetDni));
                         _startDate = DateTime(
                             _startDate.year, _startDate.month, _startDate.day);
-                        print(_pocetDni);
+                        //print(_pocetDni);
                         _search();
                       },
                 child: Text('Hľadaj'),
@@ -337,6 +330,7 @@ class _SearchScreenState extends State<SearchScreen>
               ),
             ],
           ),
+        SizedBox(height: 2),
         Expanded(
           child: _searchType == SearchType.PcrTest
               ? TestList(_testList, _searchType, _clearData)

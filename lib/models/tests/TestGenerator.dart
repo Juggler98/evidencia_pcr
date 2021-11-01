@@ -32,7 +32,7 @@ class TestGenerator {
       }
 
       int addPercentage = 99;
-      int removePercentage = 100 - addPercentage;
+      //int removePercentage = 100 - addPercentage;
       int randomNumberBound = 100;
       if (goRandom) {
         for (int i = 0; i < operationCount; i++) {
@@ -116,7 +116,7 @@ class TestGenerator {
       print("notAdded: " + addNotPossible.toString());
       print("removeCount: " + removeCount.toString());
       print("notRemove: " + removeNotPossible.toString());
-      print;
+      print('');
       print("Tree size: " + testTree.getSize().toString());
       print("ArrayList size " + testArrayList.length.toString());
       print("Tree height: " + testTree.getHeight());

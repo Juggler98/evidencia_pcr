@@ -7,7 +7,7 @@ class TTTree<K extends Comparable<K>, T extends Comparable<T>> {
 
   var height = 0;
 
-  TTTree() {}
+  TTTree();
 
   /*
     Implementovane podla slovneho popisu z prednaskoveho dokumentu.
@@ -959,7 +959,7 @@ class TTTree<K extends Comparable<K>, T extends Comparable<T>> {
   }
 
   findInOrderLeaf(TTTreeNode<K, T> node, bool leftToDelete) {
-    TTTreeNode<K, T> result = null;
+    TTTreeNode<K, T> result;
     if (leftToDelete) {
       if (node.isThreeNode()) {
         if (node.hasMiddleSon()) {

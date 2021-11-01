@@ -1,8 +1,8 @@
 import 'package:evidencia_pcr/Application.dart';
-import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
-import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class TestWidget extends StatelessWidget {
@@ -22,9 +22,18 @@ class TestWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Kód testu: ' + test.kodTestu.toString(),
-          style: TextStyle(fontSize: _fontSize),
+        GestureDetector(
+          onTap: () {
+              Clipboard.setData(ClipboardData(
+                  text: test.kodTestu.toString()));
+              Fluttertoast.showToast(
+                msg: 'Skopírované',
+              );
+          },
+          child: Text(
+            'Kód testu: ' + test.kodTestu.toString(),
+            style: TextStyle(fontSize: _fontSize),
+          ),
         ),
         Row(
           children: [

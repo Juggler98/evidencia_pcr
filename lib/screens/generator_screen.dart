@@ -1,13 +1,8 @@
 import 'package:evidencia_pcr/Application.dart';
-import 'package:evidencia_pcr/models/Osoba.dart';
-import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/text_fields/number_textfield.dart';
-import 'package:evidencia_pcr/text_fields/string_textfield.dart';
-import 'package:evidencia_pcr/widgets/person_widget.dart';
-import 'package:evidencia_pcr/pcr_testy/test_item.dart';
-import 'package:evidencia_pcr/widgets/test_widget.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class GeneratorScreen extends StatelessWidget {
   GeneratorScreen();
 
