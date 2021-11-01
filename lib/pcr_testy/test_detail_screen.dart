@@ -1,9 +1,9 @@
-import 'package:evidencia_pcr/Application.dart';
+import 'package:evidencia_pcr/application.dart';
 import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
-import 'package:evidencia_pcr/pcr_testy/person_widget.dart';
+import 'package:evidencia_pcr/widgets/person_widget.dart';
 import 'package:evidencia_pcr/pcr_testy/test_item.dart';
-import 'package:evidencia_pcr/pcr_testy/test_widget.dart';
+import 'package:evidencia_pcr/widgets/test_widget.dart';
 import 'package:flutter/material.dart';
 
 class TestDetailScreen extends StatelessWidget {

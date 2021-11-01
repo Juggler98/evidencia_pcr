@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'search_type.dart';
-import 'uz_typ.dart';
+import '../search/search_type.dart';
+import '../search/uz_typ.dart';
 
 
 class StatsDropdown extends StatefulWidget {

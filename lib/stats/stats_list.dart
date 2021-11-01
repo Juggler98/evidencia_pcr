@@ -1,14 +1,14 @@
-import 'package:evidencia_pcr/Application.dart';
+import 'package:evidencia_pcr/application.dart';
 import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/OkresPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
 import 'package:evidencia_pcr/pcr_testy/test_item.dart';
-import 'package:evidencia_pcr/search/stat_item.dart';
+import 'package:evidencia_pcr/stats/stat_item.dart';
 import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
 
-import 'search_type.dart';
+import '../search/search_type.dart';
 
 class StatsList extends StatelessWidget {
   final List<UzemnaJednotka> uzJednotky;

@@ -1,16 +1,16 @@
-import 'package:evidencia_pcr/Application.dart';
+import 'package:evidencia_pcr/application.dart';
 import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
-import 'package:evidencia_pcr/search/date_picker.dart';
-import 'package:evidencia_pcr/search/person_single.dart';
+import 'package:evidencia_pcr/widgets/date_picker.dart';
+import 'package:evidencia_pcr/widgets/person_single.dart';
 import 'package:evidencia_pcr/text_fields/number_textfield.dart';
 import 'package:evidencia_pcr/search/search_dropdown.dart';
 import 'package:evidencia_pcr/text_fields/string_textfield.dart';
 import 'package:evidencia_pcr/search/search_type.dart';
-import 'package:evidencia_pcr/search/test_list.dart';
-import 'package:evidencia_pcr/search/uzemne_jednotky_dropdown.dart';
+import 'package:evidencia_pcr/pcr_testy/test_list.dart';
+import 'package:evidencia_pcr/search/uz_dropdown.dart';
 import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,7 +227,7 @@ class _SearchScreenState extends State<SearchScreen>
         if (_searchType == SearchType.PcrTestRange)
           Column(
             children: [
-              UzemneJednotkyDropdown(_setUzJednotka, _uzJednotkaType),
+              UzDropdown(_setUzJednotka, _uzJednotkaType),
               if (_searchType == SearchType.PcrTestRange &&
                   _uzJednotkaType != UzType.All)
                 NumberTextField(
@@ -279,7 +279,7 @@ class _SearchScreenState extends State<SearchScreen>
         if (_searchType == SearchType.PositivePersons)
           Column(
             children: [
-              UzemneJednotkyDropdown(_setUzJednotka, _uzJednotkaType),
+              UzDropdown(_setUzJednotka, _uzJednotkaType),
               if (_searchType == SearchType.PositivePersons &&
                   _uzJednotkaType != UzType.All)
                 NumberTextField(

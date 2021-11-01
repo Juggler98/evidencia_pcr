@@ -4,18 +4,18 @@ import 'search_type.dart';
 import 'uz_typ.dart';
 
 
-class UzemneJednotkyDropdown extends StatefulWidget {
+class UzDropdown extends StatefulWidget {
   final Function changeValue;
 
   final UzType typ;
 
-  UzemneJednotkyDropdown(this.changeValue, this.typ);
+  UzDropdown(this.changeValue, this.typ);
 
   @override
-  _UzemneJednotkyDropdownState createState() => _UzemneJednotkyDropdownState();
+  _UzDropdownState createState() => _UzDropdownState();
 }
 
-class _UzemneJednotkyDropdownState extends State<UzemneJednotkyDropdown> {
+class _UzDropdownState extends State<UzDropdown> {
   //UzemneJednotkyTyp _searchTypeChoose = UzemneJednotkyTyp.All;
 
   final _searchTypesItems = [

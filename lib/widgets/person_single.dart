@@ -1,11 +1,11 @@
-import 'package:evidencia_pcr/Application.dart';
+import 'package:evidencia_pcr/application.dart';
 import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
-import 'package:evidencia_pcr/pcr_testy/person_widget.dart';
+import 'package:evidencia_pcr/widgets/person_widget.dart';
 import 'package:evidencia_pcr/pcr_testy/test_item.dart';
 import 'package:flutter/material.dart';
 
-import 'search_type.dart';
+import '../search/search_type.dart';
 
 class PersonSingle extends StatelessWidget {
   final Osoba _osoba;

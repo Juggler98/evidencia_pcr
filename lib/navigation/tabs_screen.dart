@@ -1,4 +1,4 @@
-import 'package:evidencia_pcr/Application.dart';
+import 'package:evidencia_pcr/application.dart';
 import 'package:evidencia_pcr/navigation/new_test_screen.dart';
 import 'package:evidencia_pcr/navigation/stats_screen.dart';
 import 'package:flutter/material.dart';
