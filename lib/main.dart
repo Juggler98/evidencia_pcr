@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = Application();
-    app.addRandomPersons(1000);
-    app.addRandomPCRTest(1000);
+    app.addRandomPersons(10000);
+    app.addRandomPCRTest(10000);
+    print(app.getPersonCount());
     return MaterialApp(
       title: 'Evidencia PCR testov',
       theme: ThemeData(

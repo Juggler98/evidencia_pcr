@@ -1,70 +1,42 @@
 import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
+import 'package:evidencia_pcr/pcr_testy/person_widget.dart';
+import 'package:evidencia_pcr/pcr_testy/test_widget.dart';
 import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'test_detail_screen.dart';
+
 class TestItem extends StatelessWidget {
   final PCRTest test;
+  final bool testFirst;
+  final Function clearData;
 
-  const TestItem(this.test);
+  const TestItem(this.test, this.testFirst, this.clearData);
 
-  final _fontSize = 14.0;
-
-
-  Widget get getTitle {
+  Widget get getTitleTestFirst {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        if (test.kodTestu != null)
-          Text(
-            'Kód testu: ' + test.kodTestu,
-            style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold),
-          ),
-        Row(
-          children: [
-            Text('Výsledok: ',
-              style: TextStyle(fontSize: _fontSize),
-            ),
-            Text(
-              test.vysledok != null
-                  ? (test.vysledok ? 'Pozitívny' : 'Negatívny')
-                  : '',
-              style: TextStyle(fontSize: _fontSize, color: test.vysledok ? Colors.red : Colors.green),
-            ),
-          ],
-        ),
-        Text(
-          test.kodKraja != null
-              ? 'Kraj: ' + test.kodKraja.toString()
-              : '',
-          style: TextStyle(fontSize: _fontSize),
-        ),
-        Text(
-          test.kodOkresu != null
-              ? 'Okres: ' + test.kodOkresu.toString()
-              : '',
-          style: TextStyle(fontSize: _fontSize),
-        ),
-        Text(
-          test.kodPracoviska != null
-              ? 'Pracovisko: ' + test.kodPracoviska.toString()
-              : '',
-          style: TextStyle(fontSize: _fontSize),
-        ),
+        SizedBox(height: 4),
+        TestWidget(test),
         Text(''),
-        Text(
-          'Meno: ' + test.osoba.meno.toString(),
-          style: TextStyle(fontSize: _fontSize),
-        ),
-        Text(
-          'Priezvisko: ' + test.osoba.priezvisko.toString(),
-          style: TextStyle(fontSize: _fontSize),
-        ),
-        Text(
-          'Rodné číslo: ' + test.rodCisloPacienta.toString(),
-          style: TextStyle(fontSize: _fontSize),
-        ),
+        PersonWidget(test.osoba),
+      ],
+    );
+  }
+
+  Widget get getTitlePersonFirst {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 4),
+        PersonWidget(test.osoba),
+        Text(''),
+        TestWidget(test),
       ],
     );
   }
@@ -78,11 +50,18 @@ class TestItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (ctx) => TestDetailScreen(),
-        //   ),
-        // );
+        Navigator.of(context)
+            .push(
+          MaterialPageRoute(
+            builder: (ctx) => TestDetailScreen(test),
+          ),
+        )
+            .then((isDeleted) {
+          if (isDeleted == true) {
+            print('clearData');
+            clearData();
+          }
+        });
       },
       child: Card(
         elevation: 2,
@@ -92,37 +71,26 @@ class TestItem extends StatelessWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              getTitle,
+              testFirst ? getTitleTestFirst : getTitlePersonFirst,
               SizedBox(height: 3),
             ],
           ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${DateFormat.yMd(Localizations.localeOf(context).toString()).format(test.datum)} ${DateFormat.jm(Localizations.localeOf(context).toString()).format(test.datum)}',
-                style: TextStyle(fontSize: _fontSize),
-              ),
-
-              //SizedBox(height: 6),
-            ],
-          ),
-          trailing: MediaQuery.of(context).size.width > 500
-              ? FlatButton.icon(
-                  onPressed: () {
-                    removeTest();
-                  },
-                  icon: const Icon(Icons.delete),
-                  label: const Text('Delete'),
-                  textColor: Theme.of(context).errorColor,
-                )
-              : IconButton(
-                  icon: const Icon(Icons.delete),
-                  color: Colors.black54,
-                  onPressed: () {
-                    removeTest();
-                  },
-                ),
+          // trailing: MediaQuery.of(context).size.width > 500
+          //     ? FlatButton.icon(
+          //         onPressed: () {
+          //           removeTest();
+          //         },
+          //         icon: const Icon(Icons.delete),
+          //         label: const Text('Delete'),
+          //         textColor: Theme.of(context).errorColor,
+          //       )
+          //     : IconButton(
+          //         icon: const Icon(Icons.delete),
+          //         color: Colors.black54,
+          //         onPressed: () {
+          //           removeTest();
+          //         },
+          //       ),
         ),
       ),
     );

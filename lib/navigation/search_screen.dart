@@ -4,10 +4,10 @@ import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
 import 'package:evidencia_pcr/search/date_picker.dart';
-import 'package:evidencia_pcr/search/number_textfield.dart';
+import 'package:evidencia_pcr/search/person_single.dart';
+import 'package:evidencia_pcr/text_fields/number_textfield.dart';
 import 'package:evidencia_pcr/search/search_dropdown.dart';
-import 'package:evidencia_pcr/search/test_single.dart';
-import 'package:evidencia_pcr/search/string_textfield.dart';
+import 'package:evidencia_pcr/text_fields/string_textfield.dart';
 import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:evidencia_pcr/search/test_list.dart';
 import 'package:evidencia_pcr/search/uzemne_jednotky_dropdown.dart';
@@ -17,7 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class SearchScreen extends StatefulWidget {
-
   SearchScreen();
 
   @override
@@ -26,7 +25,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen>
     with AutomaticKeepAliveClientMixin<SearchScreen> {
-  var _enteredText = '-';
+  var _enteredText;
 
   var _searchType = SearchType.PcrTest;
   var _uzJednotkaType = UzType.All;
@@ -42,6 +41,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   List<PCRTestDate> _testList = [];
 
+  Osoba _osoba;
   List<PCRTestDate> _personTest = [];
 
   final app = new Application();
@@ -49,12 +49,20 @@ class _SearchScreenState extends State<SearchScreen>
   @override
   bool get wantKeepAlive => true;
 
+  void _clearData() {
+    setState(() {
+      _testList.clear();
+      _personTest.clear();
+      _osoba = null;
+    });
+  }
+
   void _setSearchType(SearchType type) {
     setState(() {
       _searchType = type;
       //if (type == SearchType.PositivePersons) {
-      _startDate = null;
-      _endDate = null;
+      //_startDate = null;
+      //_endDate = null;
       //}
       _testList = [];
     });
@@ -70,13 +78,23 @@ class _SearchScreenState extends State<SearchScreen>
   void _setEnteredCode(String value) {
     setState(() {
       _enteredText = value;
-      if (_searchType == SearchType.PersonTests) {
-        final osoba = app.getOsoba(_enteredText);
-        if (osoba != null) {
-          _personTest = osoba.getTesty().getInOrderData();
-          _showDataCount(_personTest.length);
-        } else {
-          _personTest = [];
+      if (value != null) {
+        if (_searchType == SearchType.PersonTests) {
+          final osoba = app.getOsoba(_enteredText);
+          _osoba = osoba;
+          if (osoba != null) {
+            _personTest = osoba.getTesty().getInOrderData();
+            _showDataCount(_personTest.length);
+          } else {
+            _personTest = [];
+          }
+        } else if (_searchType == SearchType.PcrTest) {
+          _testList = [];
+          final tempData = app.getPCRTest(_enteredText);
+          if (tempData != null) {
+            final temp = new PCRTestDate(tempData);
+            _testList.add(temp);
+          }
         }
       }
     });
@@ -203,16 +221,17 @@ class _SearchScreenState extends State<SearchScreen>
           child: SearchDropdown(_setSearchType),
         ),
         if (_searchType == SearchType.PcrTest)
-          StringTextField(_setEnteredCode, 'Zadaj kód testu'),
+          StringTextField(_setEnteredCode, 'Zadaj kód testu', _enteredText),
         if (_searchType == SearchType.PersonTests)
-          StringTextField(_setEnteredCode, 'Zadaj rodné číslo'),
+          StringTextField(_setEnteredCode, 'Zadaj rodné číslo', _enteredText),
         if (_searchType == SearchType.PcrTestRange)
           Column(
             children: [
               UzemneJednotkyDropdown(_setUzJednotka, _uzJednotkaType),
               if (_searchType == SearchType.PcrTestRange &&
                   _uzJednotkaType != UzType.All)
-                NumberTextField(_setKodUzJednotky, getNumberTextFieldText),
+                NumberTextField(
+                    _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
@@ -263,9 +282,11 @@ class _SearchScreenState extends State<SearchScreen>
               UzemneJednotkyDropdown(_setUzJednotka, _uzJednotkaType),
               if (_searchType == SearchType.PositivePersons &&
                   _uzJednotkaType != UzType.All)
-                NumberTextField(_setKodUzJednotky, getNumberTextFieldText),
+                NumberTextField(
+                    _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
               SizedBox(height: 4),
-              NumberTextField(_setDayNumber, 'Max počet dní od testu'),
+              NumberTextField(
+                  _setDayNumber, 'Max počet dní od testu', _pocetDni),
               DatePicker('k dátumu', _setEndDate, _endDate),
               SizedBox(height: 2),
               ElevatedButton(
@@ -292,10 +313,19 @@ class _SearchScreenState extends State<SearchScreen>
           ),
         Expanded(
           child: _searchType == SearchType.PcrTest
-              ? TestSingle(app.getPCRTest(_enteredText))
+              ? TestList(_testList, _searchType, _clearData)
               : _searchType == SearchType.PersonTests
-                  ? TestList(_personTest, _searchType)
-                  : TestList(_testList, _searchType),
+                  ? _personTest.isEmpty
+                      ? Column(
+                          children: [
+                            SizedBox(height: 16),
+                            PersonSingle(_osoba, _clearData),
+                            SizedBox(height: 16),
+                            if (_osoba != null) Text('Žiadne testy')
+                          ],
+                        )
+                      : TestList(_personTest, _searchType, _clearData)
+                  : TestList(_testList, _searchType, _clearData),
         ),
       ],
     );

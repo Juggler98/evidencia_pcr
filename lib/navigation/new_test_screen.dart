@@ -9,12 +9,11 @@ import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
 import 'package:evidencia_pcr/models/twoThreeTree/TTTree.dart';
 import 'package:evidencia_pcr/search/date_picker.dart';
-import 'package:evidencia_pcr/search/number_textfield.dart';
+import 'package:evidencia_pcr/text_fields/number_textfield.dart';
 import 'package:evidencia_pcr/search/search_dropdown.dart';
 import 'package:evidencia_pcr/search/stats_dropdown.dart';
 import 'package:evidencia_pcr/search/stats_list.dart';
-import 'package:evidencia_pcr/search/test_single.dart';
-import 'package:evidencia_pcr/search/string_textfield.dart';
+import 'package:evidencia_pcr/text_fields/string_textfield.dart';
 import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:evidencia_pcr/search/test_list.dart';
 import 'package:evidencia_pcr/search/uzemne_jednotky_dropdown.dart';
@@ -24,7 +23,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class NewTestScreen extends StatefulWidget {
-
   NewTestScreen();
 
   @override
@@ -33,8 +31,6 @@ class NewTestScreen extends StatefulWidget {
 
 class _NewTestScreenState extends State<NewTestScreen>
     with AutomaticKeepAliveClientMixin<NewTestScreen> {
-
-
   String _rodneCislo;
   String _meno;
   String _priezvisko;
@@ -42,12 +38,12 @@ class _NewTestScreenState extends State<NewTestScreen>
   var _kodOkresu = 205;
   var _positive = false;
   String _poznamka;
+  var _createNewPerson = false;
 
   final app = new Application();
 
   @override
   bool get wantKeepAlive => true;
-
 
   void _setRodneCislo(String rodCislo) {
     setState(() {
@@ -85,14 +81,63 @@ class _NewTestScreenState extends State<NewTestScreen>
     });
   }
 
-  void _setPositive(bool positive) {
-    setState(() {
-      _positive = positive;
-    });
+  void _save() {
+    Osoba osoba;
+    if (_createNewPerson) {
+      if (_meno == null || _priezvisko == null) {
+        _showScaffold('Zadaj meno a priezvisko');
+        //return;
+      }
+      osoba = app.addOsoba(_meno, _priezvisko, _rodneCislo);
+      if (osoba != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Osoba bola vytvorená'),
+          ),
+        );
+        setState(() {
+          _meno = null;
+          _priezvisko = null;
+        });
+      }
+      _createNewPerson = false;
+    } else {
+      osoba = app.getOsoba(_rodneCislo);
+    }
+    if (osoba == null) {
+      setState(() {
+        _createNewPerson = true;
+      });
+      return;
+    }
+    if (app.addPCRTest(null, _rodneCislo, _kodPracoviska, _kodOkresu,
+        _kodOkresu ~/ 100, _positive, _poznamka, osoba, null)) {
+      setState(() {
+        _rodneCislo = null;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Test bol vytvoreny'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Test nebol vytvoreny'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+    }
   }
 
-  void _save() {
-
+  void _showScaffold(String text) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Theme.of(context).errorColor,
+      ),
+    );
   }
 
   @override
@@ -101,11 +146,13 @@ class _NewTestScreenState extends State<NewTestScreen>
     return SingleChildScrollView(
       child: Column(
         children: [
-          StringTextField(_setRodneCislo, 'Zadaj rodné číslo'),
+          SizedBox(height: 8),
+          StringTextField(_setRodneCislo, 'Zadaj rodné číslo', _rodneCislo),
           SizedBox(height: 2),
-          NumberTextField(_setOkres, 'Zadaj kód okresu'),
-          NumberTextField(_setPracovisko, 'Zadaj kód pracoviska'),
-          StringTextField(_setPoznamka, 'Poznámka'),
+          NumberTextField(_setOkres, 'Zadaj kód okresu', _kodOkresu),
+          NumberTextField(
+              _setPracovisko, 'Zadaj kód pracoviska', _kodPracoviska),
+          StringTextField(_setPoznamka, 'Poznámka', _poznamka),
           Padding(
             padding: const EdgeInsets.only(
                 left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
@@ -124,27 +171,30 @@ class _NewTestScreenState extends State<NewTestScreen>
               },
             ),
           ),
+          if (_createNewPerson)
+            Column(
+              children: [
+                StringTextField(_setMeno, 'Meno', _meno),
+                SizedBox(height: 2),
+                StringTextField(_setPriezvisko, 'Priezvisko', _priezvisko),
+              ],
+            ),
           ElevatedButton(
-            onPressed: _rodneCislo == null || _kodOkresu == null || _kodPracoviska == null
+            onPressed: _rodneCislo == null ||
+                    _kodOkresu == null ||
+                    _kodPracoviska == null
                 ? null
                 : () {
-              if (_rodneCislo.length != 9 || _rodneCislo.length != 10) {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Rodné číslo musí mať 9 alebo 10 znakov.'),
-                    backgroundColor: Theme.of(context).errorColor,
-                  ),
-                );
-              } else {
-                _save();
-              }
-            },
+                    if (_rodneCislo.length != 9 && _rodneCislo.length != 10) {
+                      _showScaffold('Rodné číslo musí mať 9 alebo 10 znakov.');
+                    } else {
+                      _save();
+                    }
+                  },
             child: Text('Ulož'),
             style: ButtonStyle(
               shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               ),
               //backgroundColor: MaterialStateProperty.all(Colors.brown),
             ),

@@ -1,34 +1,43 @@
-import 'package:evidencia_pcr/search/uz_typ.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class NumberTextField extends StatefulWidget {
+class StringTextField extends StatefulWidget {
   final Function changeText;
   final String placeholder;
+  final String text;
 
-  NumberTextField(this.changeText, this.placeholder);
+  StringTextField(this.changeText, this.placeholder, this.text);
 
   @override
-  _NumberTextFieldState createState() => _NumberTextFieldState();
+  _StringTextFieldState createState() => _StringTextFieldState();
 }
 
-class _NumberTextFieldState extends State<NumberTextField> {
+class _StringTextFieldState extends State<StringTextField> {
+
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.text != null)
+      _controller = TextEditingController()..text = widget.text.toString();
+    else
+      _controller = TextEditingController()..text = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          const EdgeInsets.only(left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
+          const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 4.0),
       child: Row(
         children: [
           Expanded(
             child: TextField(
-              keyboardType: TextInputType.number,
+              controller: _controller,
+              textCapitalization: TextCapitalization.characters,
               autocorrect: false,
               enableSuggestions: false,
               autofocus: false,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
               decoration: InputDecoration(
                 labelText: widget.placeholder,
                 border: OutlineInputBorder(
@@ -37,12 +46,7 @@ class _NumberTextFieldState extends State<NumberTextField> {
                 ),
               ),
               onChanged: (value) {
-                if (value.isNotEmpty) {
-                  final i = int.parse(value);
-                  widget.changeText(i);
-                } else {
-                  widget.changeText(null);
-                }
+                widget.changeText(value.isEmpty ? null : value);
               },
             ),
           ),

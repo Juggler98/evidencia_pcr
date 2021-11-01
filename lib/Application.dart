@@ -12,7 +12,6 @@ import 'models/Pracovisko.dart';
 import 'models/twoThreeTree/TTTree.dart';
 
 class Application {
-
   static final Application _singleton = Application._internal();
 
   factory Application() {
@@ -671,7 +670,7 @@ class Application {
     }
     for (int i = 0; i < okresCodes.length; i++) {
       Okres okres =
-      new Okres(okresCodes[i], okresCodes[i] ~/ 100, okresNames[i]);
+          new Okres(okresCodes[i], okresCodes[i] ~/ 100, okresNames[i]);
       okresTree.add(okres);
     }
     for (int i = 0; i < krajCodes.length; i++) {
@@ -849,7 +848,7 @@ class Application {
       Osoba osoba,
       DateTime datum) {
     if (kodTestu == null) {
-      kodTestu = Random().nextInt(100).toString();
+      kodTestu = Random().nextInt(100000).toString();
     }
     final pcrTest = new PCRTest(kodTestu, rodCislo, kodPracoviska, kodOkresu,
         kodKraju, vysledok, poznamka, osoba, datum);
@@ -945,7 +944,7 @@ class Application {
     int month = int.parse(rodCislo.substring(2, 4));
     int day = int.parse(rodCislo.substring(4, 6));
     final date = DateTime(
-        year < actualDate.year - 100 ? year + 100 : year, month - 1, day);
+        year <= actualDate.year - 2000 ? year + 2000 : year + 1900, month, day);
     final osoba = Osoba(meno, priezvisko, date, rodCislo);
     if (personTree.add(osoba)) {
       return osoba;
@@ -955,7 +954,6 @@ class Application {
 
   void addRandomPCRTest(int count) {
     final actualDate = DateTime.now();
-    print(actualDate);
     for (int i = 0; i < count; i++) {
       final rodCislo = this.getRandomRodCislo();
       int kodPracoviska =
@@ -972,12 +970,23 @@ class Application {
           return;
         }
       }
-      var kodTestu = "" + random.nextInt(10000).toString();
+      var kodTestu = "" + random.nextInt(1000000).toString();
       kodTestu = null;
 
-      int year = random.nextInt(actualDate.year - 121 + 1) + 121;
-      int month = random.nextInt(12) + 1;
-      int day = random.nextInt(31) + 1;
+      int year = random.nextInt(actualDate.year - 2021 + 1) + 2021;
+      int month;
+      int day;
+      if (year == actualDate.year) {
+        month = random.nextInt(actualDate.month) + 1;
+        if (month == actualDate.month) {
+          day = random.nextInt(actualDate.day) + 1;
+        } else {
+          day = random.nextInt(31) + 1;
+        }
+      } else {
+        month = random.nextInt(12) + 1;
+        day = random.nextInt(31) + 1;
+      }
       if (month == 2 && day > 28) {
         day = 28;
       } else if (day == 31) {
@@ -991,11 +1000,11 @@ class Application {
       }
       int hour = random.nextInt(24);
       int minutes = random.nextInt(60);
-      var date = new DateTime(year, month - 1, day, hour, minutes);
-      date = actualDate;
+      var date = new DateTime(year, month, day, hour, minutes);
+      //date = actualDate;
       if (osoba != null)
         this.addPCRTest(kodTestu, osoba.getRodCislo(), kodPracoviska, kodOkresu,
-            kodKraju, vysledok, null, osoba, actualDate);
+            kodKraju, vysledok, null, osoba, date);
     }
     this.randomOsoby.clear();
   }

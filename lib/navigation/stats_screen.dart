@@ -9,12 +9,11 @@ import 'package:evidencia_pcr/models/PCRTestDate.dart';
 import 'package:evidencia_pcr/models/UzemnaJednotka.dart';
 import 'package:evidencia_pcr/models/twoThreeTree/TTTree.dart';
 import 'package:evidencia_pcr/search/date_picker.dart';
-import 'package:evidencia_pcr/search/number_textfield.dart';
+import 'package:evidencia_pcr/text_fields/number_textfield.dart';
 import 'package:evidencia_pcr/search/search_dropdown.dart';
 import 'package:evidencia_pcr/search/stats_dropdown.dart';
 import 'package:evidencia_pcr/search/stats_list.dart';
-import 'package:evidencia_pcr/search/test_single.dart';
-import 'package:evidencia_pcr/search/string_textfield.dart';
+import 'package:evidencia_pcr/text_fields/string_textfield.dart';
 import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:evidencia_pcr/search/test_list.dart';
 import 'package:evidencia_pcr/search/uzemne_jednotky_dropdown.dart';
@@ -36,7 +35,7 @@ class _StatsScreenState extends State<StatsScreen>
 
   var _uzJednotkaType = UzType.Kraj;
 
-  var _pocetDni = 0;
+  var _pocetDni;
 
   DateTime _startDate;
   DateTime _endDate;
@@ -149,7 +148,7 @@ class _StatsScreenState extends State<StatsScreen>
       children: [
         StatsDropdown(_setUzJednotka, _uzJednotkaType),
         SizedBox(height: 4),
-        NumberTextField(_setDayNumber, 'Max počet dní od testu'),
+        NumberTextField(_setDayNumber, 'Max počet dní od testu', _pocetDni),
         DatePicker('k dátumu', _setEndDate, _endDate),
         SizedBox(height: 2),
         ElevatedButton(

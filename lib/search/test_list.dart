@@ -1,6 +1,5 @@
 import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
-import 'package:evidencia_pcr/pcr_testy/person_item.dart';
 import 'package:evidencia_pcr/pcr_testy/test_item.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +9,9 @@ class TestList extends StatelessWidget {
   final List<PCRTestDate> tests;
 
   final SearchType searchType;
+  final Function clearData;
 
-  TestList(this.tests, this.searchType);
+  TestList(this.tests, this.searchType, this.clearData);
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +32,11 @@ class TestList extends StatelessWidget {
       child: ListView.builder(
           itemCount: tests.length,
           itemBuilder: (ctx, index) {
+            var testFirst = true;
             if (searchType == SearchType.PositivePersons) {
-              return PersonItem(tests[index].data);
+              testFirst = false;
             }
-            return TestItem(tests[index].data);
+            return TestItem(tests[index].data, testFirst, this.clearData);
           }),
     );
   }
