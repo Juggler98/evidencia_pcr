@@ -1,4 +1,4 @@
-import 'package:evidencia_pcr/application.dart';
+import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/OkresPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';

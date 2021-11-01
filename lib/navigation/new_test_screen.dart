@@ -1,4 +1,4 @@
-import 'package:evidencia_pcr/application.dart';
+import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/Kraj.dart';
 import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/Okres.dart';
@@ -149,6 +149,7 @@ class _NewTestScreenState extends State<NewTestScreen>
           StringTextField(_setRodneCislo, 'Zadaj rodné číslo', _rodneCislo),
           SizedBox(height: 2),
           NumberTextField(_setOkres, 'Zadaj kód okresu', _kodOkresu),
+          SizedBox(height: 2),
           NumberTextField(
               _setPracovisko, 'Zadaj kód pracoviska', _kodPracoviska),
           StringTextField(_setPoznamka, 'Poznámka', _poznamka),
@@ -176,6 +177,7 @@ class _NewTestScreenState extends State<NewTestScreen>
                 StringTextField(_setMeno, 'Meno', _meno),
                 SizedBox(height: 2),
                 StringTextField(_setPriezvisko, 'Priezvisko', _priezvisko),
+                SizedBox(height: 2),
               ],
             ),
           ElevatedButton(

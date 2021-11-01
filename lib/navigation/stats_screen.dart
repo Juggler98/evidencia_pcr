@@ -1,4 +1,4 @@
-import 'package:evidencia_pcr/application.dart';
+import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/Kraj.dart';
 import 'package:evidencia_pcr/models/KrajPocetPozitivnych.dart';
 import 'package:evidencia_pcr/models/Okres.dart';
@@ -18,6 +18,7 @@ import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:evidencia_pcr/pcr_testy/test_list.dart';
 import 'package:evidencia_pcr/search/uz_dropdown.dart';
 import 'package:evidencia_pcr/search/uz_typ.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -149,8 +150,19 @@ class _StatsScreenState extends State<StatsScreen>
         StatsDropdown(_setUzJednotka, _uzJednotkaType),
         SizedBox(height: 4),
         NumberTextField(_setDayNumber, 'Max počet dní od testu', _pocetDni),
+        if (defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS ||
+            defaultTargetPlatform == TargetPlatform.linux)
+          SizedBox(height: 16)
+        else
+          SizedBox(height: 2),
         DatePicker('k dátumu', _setEndDate, _endDate),
-        SizedBox(height: 2),
+        if (defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.macOS ||
+            defaultTargetPlatform == TargetPlatform.linux)
+          SizedBox(height: 16)
+        else
+          SizedBox(height: 2),
         ElevatedButton(
           onPressed: _endDate == null || _pocetDni == null
               ? null

@@ -1,4 +1,4 @@
-import 'package:evidencia_pcr/application.dart';
+import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/widgets/person_widget.dart';
 import 'package:evidencia_pcr/widgets/test_widget.dart';
@@ -6,7 +6,7 @@ import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'test_detail_screen.dart';
+import '../screens/test_detail_screen.dart';
 
 class TestItem extends StatelessWidget {
   final PCRTest test;

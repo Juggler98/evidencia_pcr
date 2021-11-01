@@ -1,4 +1,5 @@
-import 'package:evidencia_pcr/application.dart';
+import 'dart:io';
+
 import 'package:evidencia_pcr/models/Osoba.dart';
 import 'package:evidencia_pcr/models/PCRTest.dart';
 import 'package:evidencia_pcr/models/PCRTestDate.dart';
@@ -12,9 +13,12 @@ import 'package:evidencia_pcr/search/search_type.dart';
 import 'package:evidencia_pcr/pcr_testy/test_list.dart';
 import 'package:evidencia_pcr/search/uz_dropdown.dart';
 import 'package:evidencia_pcr/search/uz_typ.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
+import '../Application.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen();
@@ -230,8 +234,12 @@ class _SearchScreenState extends State<SearchScreen>
               UzDropdown(_setUzJednotka, _uzJednotkaType),
               if (_searchType == SearchType.PcrTestRange &&
                   _uzJednotkaType != UzType.All)
-                NumberTextField(
-                    _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
+                if (defaultTargetPlatform == TargetPlatform.windows ||
+                    defaultTargetPlatform == TargetPlatform.macOS ||
+                    defaultTargetPlatform == TargetPlatform.linux)
+                  SizedBox(height: 6),
+              NumberTextField(
+                  _setKodUzJednotky, getNumberTextFieldText, _kodUzJednotky),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 30.0, right: 30.0, top: 4.0, bottom: 0.0),
@@ -250,6 +258,10 @@ class _SearchScreenState extends State<SearchScreen>
                   },
                 ),
               ),
+              if (defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux)
+                SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -258,7 +270,12 @@ class _SearchScreenState extends State<SearchScreen>
                   DatePicker('Vyber koniec', _setEndDate, _endDate),
                 ],
               ),
-              SizedBox(height: 2),
+              if (defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux)
+                SizedBox(height: 20)
+              else
+                SizedBox(height: 2),
               ElevatedButton(
                 onPressed: _startDate == null || _endDate == null
                     ? null
@@ -287,8 +304,17 @@ class _SearchScreenState extends State<SearchScreen>
               SizedBox(height: 4),
               NumberTextField(
                   _setDayNumber, 'Max počet dní od testu', _pocetDni),
+              if (defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux)
+                SizedBox(height: 20),
               DatePicker('k dátumu', _setEndDate, _endDate),
-              SizedBox(height: 2),
+              if (defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux)
+                SizedBox(height: 20)
+              else
+                SizedBox(height: 2),
               ElevatedButton(
                 onPressed: _endDate == null || _pocetDni == null
                     ? null

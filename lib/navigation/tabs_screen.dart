@@ -1,9 +1,10 @@
-import 'package:evidencia_pcr/application.dart';
+import 'package:evidencia_pcr/Application.dart';
 import 'package:evidencia_pcr/navigation/new_test_screen.dart';
 import 'package:evidencia_pcr/navigation/stats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../main_drawer.dart';
 import 'search_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -62,9 +63,16 @@ class _TabsScreenState extends State<TabsScreen>
         title: Text(
           'Evidencia PCR testov',
         ),
-        actions: [],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            tooltip: 'Ulož do súboru',
+            onPressed: () {},
+          ),
+        ],
       ),
-      //drawer: MainDrawer(),
+      drawer: MainDrawer(),
       body: PageView(
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
@@ -75,12 +83,9 @@ class _TabsScreenState extends State<TabsScreen>
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: _selectPage,
-        backgroundColor:
-            _isDarkMode ? Color.fromRGBO(45, 45, 45, 1) : Colors.white,
-        unselectedItemColor:
-            _isDarkMode ? Color.fromRGBO(255, 255, 255, 1) : Colors.black,
-        selectedItemColor:
-            _isDarkMode ? Color.fromRGBO(153, 204, 255, 1) : Colors.green,
+        backgroundColor: Colors.white,
+        unselectedItemColor: Colors.black,
+        selectedItemColor: Colors.blue,
         currentIndex: _selectedPageIndex,
         //selectedIconTheme: IconThemeData(color: Colors.green),
         items: [
