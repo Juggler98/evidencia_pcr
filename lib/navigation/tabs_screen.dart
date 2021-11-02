@@ -66,6 +66,7 @@ class _TabsScreenState extends State<TabsScreen>
             tooltip: 'Ulož do súboru',
             onPressed: () async {
               if (kIsWeb) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Nie je dostupné pre web'),
