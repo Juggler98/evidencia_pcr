@@ -65,9 +65,7 @@ class _TabsScreenState extends State<TabsScreen>
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             tooltip: 'Ulož do súboru',
             onPressed: () async {
-              if (defaultTargetPlatform == TargetPlatform.windows ||
-                  defaultTargetPlatform == TargetPlatform.macOS ||
-                  defaultTargetPlatform == TargetPlatform.linux) {
+              if (kIsWeb) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Nie je dostupné pre web'),
